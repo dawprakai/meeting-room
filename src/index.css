@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Reset เบื้องต้น ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+  height: 100%;
+}
+
+/* ===== Input & Button มาตรฐาน ===== */
+input {
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* ===== Utility เพิ่ม ===== */
+.text-center {
+  text-align: center;
+}
