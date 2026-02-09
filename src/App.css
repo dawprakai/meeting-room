@@ -347,3 +347,130 @@
 .booking-actions {
   margin-top: 10px;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
+
+:root {
+  --primary: #7b2cbf;       /* ม่วงหลัก */
+  --primary-dark: #5a189a;
+  --bg-gray: #f3f4f6;
+  --text-dark: #1f2937;
+  --text-gray: #6b7280;
+  --success: #22c55e;
+  --danger: #ef4444;
+}
+
+* { box-sizing: border-box; font-family: 'Kanit', sans-serif; }
+
+body {
+  background-color: var(--bg-gray);
+  margin: 0;
+  color: var(--text-dark);
+}
+
+.page {
+  padding: 16px;
+  padding-bottom: 80px;
+  max-width: 480px; /* จำลองขนาดมือถือ */
+  margin: 0 auto;
+}
+
+/* ===== Navbar ===== */
+.navbar {
+  background: var(--primary);
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.navbar-title { font-size: 20px; font-weight: 600; }
+.logout-btn { background: rgba(255,255,255,0.2); border: none; padding: 4px 12px; border-radius: 99px; color: white; cursor: pointer;}
+
+/* ===== Room Card (User) ===== */
+.room-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+.room-image-container { position: relative; height: 180px; }
+.room-image { width: 100%; height: 100%; object-fit: cover; }
+.room-badge {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: white;
+  color: var(--primary);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.room-content { padding: 16px; }
+.room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.room-title { font-size: 18px; font-weight: bold; margin: 0; }
+
+.status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.status-dot.green { background: var(--success); box-shadow: 0 0 0 2px #dcfce7; }
+.status-dot.red { background: var(--danger); box-shadow: 0 0 0 2px #fee2e2; }
+
+.room-info-row { display: flex; align-items: center; gap: 8px; color: var(--text-gray); font-size: 14px; margin-bottom: 4px; }
+.icon { width: 16px; text-align: center; }
+
+.book-btn {
+  width: 100%;
+  background: linear-gradient(to right, #7b2cbf, #9d4edd);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  margin-top: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3);
+}
+.book-btn:disabled { background: #d1d5db; box-shadow: none; cursor: not-allowed; }
+
+/* ===== Admin Dashboard ===== */
+.dashboard-stats { display: grid; gap: 16px; margin-bottom: 24px; }
+.stat-card {
+  background: #e5e7eb; /* สีเทาตามรูป */
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.stat-label { font-size: 18px; font-weight: 600; }
+.stat-value { font-size: 28px; font-weight: bold; }
+
+.table-container { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; }
+.custom-table { width: 100%; border-collapse: collapse; text-align: left; }
+.custom-table th { background: #e5e7eb; padding: 12px; font-weight: 600; }
+.custom-table td { padding: 12px; border-bottom: 1px solid #f3f4f6; }
+.status-tag { background: #374151; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+
+/* ===== Modal ===== */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  display: flex; justify-content: center; align-items: center; z-index: 100;
+}
+.modal {
+  background: white; width: 90%; max-width: 320px;
+  padding: 24px; border-radius: 20px; text-align: center;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+}
+.success-icon {
+  width: 48px; height: 48px; background: #dcfce7; color: var(--success);
+  border-radius: 50%; display: flex; justify-content: center; align-items: center;
+  font-size: 24px; margin: 0 auto 16px;
+}
+.modal-title { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
+.ok-btn { background: #374151; color: white; width: 100%; padding: 10px; border-radius: 8px; border: none; margin-top: 16px; }

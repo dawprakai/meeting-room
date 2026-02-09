@@ -1,16 +1,45 @@
-export default function RoomCard({ room, onBook }) {
+import React from "react";
+
+export default function RoomCard({ room, onBook, isBooked }) {
   return (
     <div className="room-card">
-      <h3 className="room-title">{room.name}</h3>
+      {/* ส่วนรูปภาพและป้าย Type */}
+      <div className="room-image-container">
+        <img src={room.image} alt={room.name} className="room-image" />
+        <div className="room-badge">{room.type || "General"}</div>
+      </div>
 
-      <p>👥 {room.capacity} คน</p>
-      <p>📺 {room.equipment.join(", ")}</p>
+      <div className="room-content">
+        {/* ชื่อห้องและสถานะ */}
+        <div className="room-header">
+          <h3 className="room-title">{room.name}</h3>
+          <span className={`status-dot ${isBooked ? "red" : "green"}`}></span>
+        </div>
 
-      <div className="room-footer">
-        <span className="status available">● ว่าง</span>
+        {/* รายละเอียด: สถานที่ */}
+        <div className="room-info-row">
+          <span className="icon">📍</span>
+          <span>{room.building} ชั้น {room.floor}</span>
+        </div>
 
-        <button className="book-btn" onClick={onBook}>
-          จองห้องนี้
+        {/* รายละเอียด: จำนวนคน */}
+        <div className="room-info-row">
+          <span className="icon">👥</span>
+          <span>{room.capacity} คน</span>
+        </div>
+
+        {/* รายละเอียด: อุปกรณ์ */}
+        <div className="room-info-row">
+          <span className="icon">📺</span>
+          <span>{room.equipment.join(", ")}</span>
+        </div>
+
+        <button 
+          className="book-btn" 
+          onClick={onBook}
+          disabled={isBooked} // ปุ่มเทาถ้าไม่ว่าง
+        >
+          {isBooked ? "ไม่ว่าง" : "จองห้องนี้"}
         </button>
       </div>
     </div>

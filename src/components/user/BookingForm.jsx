@@ -2,99 +2,68 @@ import { useState } from "react";
 import { useBooking } from "../../context/BookingContext";
 import { useAuth } from "../../context/AuthContext";
 
-export default function BookingForm({
-  room,
-  booking = null,   // ⭐ ถ้ามี = แก้ไข
-  close,
-  onSuccess
-}) {
+export default function BookingForm({ room, booking = null, close, onSuccess }) {
   const { addBooking, updateBooking } = useBooking();
   const { user } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // ⭐ preload ค่า ถ้าเป็นการแก้ไข
+  // Preload ค่า
   const [date, setDate] = useState(booking?.date || "");
   const [startTime, setStartTime] = useState(booking?.startTime || "");
   const [endTime, setEndTime] = useState(booking?.endTime || "");
 
-  const confirm = () => {
-    /* ===== เช็ก login ===== */
-    if (!user) {
-      alert("กรุณาเข้าสู่ระบบก่อนจองห้อง");
-      return;
-    }
+  const confirm = async () => { // ⭐ เพิ่ม async
+    if (!user) return alert("กรุณาเข้าสู่ระบบ");
+    if (!date || !startTime || !endTime) return alert("กรุณากรอกข้อมูลให้ครบ");
+    if (startTime >= endTime) return alert("เวลาไม่ถูกต้อง");
 
-    /* ===== เช็กข้อมูลครบ ===== */
-    if (!date || !startTime || !endTime) {
-      alert("กรุณาเลือกวันที่และเวลาให้ครบ");
-      return;
-    }
-
-    /* ===== เช็กเวลา ===== */
-    if (startTime >= endTime) {
-      alert("เวลาเริ่มต้องน้อยกว่าเวลาสิ้นสุด");
-      return;
-    }
+    setIsSubmitting(true);
 
     const data = {
-      id: booking?.id,          // ⭐ มีเฉพาะตอนแก้ไข
+      id: booking?.id,
       roomId: room.id,
       roomName: room.name,
-      booker: user.username || "Guest",
-      date,
-      startTime,
-      endTime
+      booker: user.username,
+      date, startTime, endTime
     };
 
-    // ⭐ แยก add / update
-    const result = booking
-      ? updateBooking(data)
-      : addBooking(data);
-
-    if (!result.success) {
-      alert(result.message);
-      return;
+    // ⭐ ใช้ await รอผลลัพธ์
+    let result;
+    if (booking) {
+      result = await updateBooking(data);
+    } else {
+      result = await addBooking(data);
     }
 
-    onSuccess(); // popup สำเร็จ / ปิด
+    setIsSubmitting(false);
+
+    if (result.success) {
+      onSuccess();
+    } else {
+      alert(result.message);
+    }
   };
 
   return (
     <>
-      <h3 className="modal-title">
-        {room.name}
-      </h3>
-
+      <h3 className="modal-title">{room.name}</h3>
       <label className="modal-label">วันที่</label>
-      <input
-        type="date"
-        className="modal-input"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
-
+      <input type="date" className="modal-input" value={date} onChange={e => setDate(e.target.value)} />
+      
       <label className="modal-label">เริ่ม</label>
-      <input
-        type="time"
-        className="modal-input"
-        value={startTime}
-        onChange={(e) => setStartTime(e.target.value)}
-      />
-
+      <input type="time" className="modal-input" value={startTime} onChange={e => setStartTime(e.target.value)} />
+      
       <label className="modal-label">สิ้นสุด</label>
-      <input
-        type="time"
-        className="modal-input"
-        value={endTime}
-        onChange={(e) => setEndTime(e.target.value)}
-      />
+      <input type="time" className="modal-input" value={endTime} onChange={e => setEndTime(e.target.value)} />
 
-      <button className="confirm-btn" onClick={confirm}>
-        {booking ? "บันทึกการแก้ไข" : "ยืนยันการจอง"}
-      </button>
-
-      <button className="cancel-btn" onClick={close}>
-        ยกเลิก
-      </button>
+      <div style={{display:'flex', gap:'10px', marginTop:'10px'}}>
+        <button className="confirm-btn" onClick={confirm} disabled={isSubmitting} style={{flex:1}}>
+          {isSubmitting ? "กำลังบันทึก..." : "ยืนยัน"}
+        </button>
+        <button className="cancel-btn" onClick={close} disabled={isSubmitting} style={{flex:1}}>
+          ยกเลิก
+        </button>
+      </div>
     </>
   );
 }

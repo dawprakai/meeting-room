@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useBooking } from "../../context/BookingContext";
 import BookingForm from "./BookingForm";
 import Navbar from "../layout/Navbar";
-import UserBottomNav from "../layout/UserBottomNav"; // ⭐ เพิ่ม
+import UserBottomNav from "../layout/UserBottomNav";
+import RoomCard from "./RoomCard";
 
 export default function RoomList() {
   const { rooms, isRoomBookedToday } = useBooking();
@@ -11,44 +12,22 @@ export default function RoomList() {
 
   return (
     <>
-      {/* ===== Navbar ===== */}
       <Navbar title="RoomWise Booking" />
 
       <div className="page">
-        {rooms.map((room) => {
-          const booked = isRoomBookedToday(room.id);
+        {rooms.map((room) => (
+          <RoomCard 
+            key={room.id} 
+            room={room} 
+            isBooked={isRoomBookedToday(room.id)}
+            onBook={() => setSelectedRoom(room)}
+          />
+        ))}
 
-          return (
-            <div key={room.id} className="room-card">
-              <img
-                src={room.image}
-                alt={room.name}
-                className="room-image"
-              />
-
-              <h3 className="room-title">{room.name}</h3>
-              <p>👥 {room.capacity} คน</p>
-
-              <div className="room-status">
-                <span className={`dot ${booked ? "red" : "green"}`}></span>
-                {booked ? "ไม่ว่าง" : "ว่าง"}
-              </div>
-
-              <button
-                className="book-btn"
-                onClick={() => setSelectedRoom(room)}
-                disabled={booked}
-              >
-                จองห้องนี้
-              </button>
-            </div>
-          );
-        })}
-
-        {/* ===== Popup จอง ===== */}
+        {/* Popup จองห้อง */}
         {selectedRoom && (
           <div className="modal-overlay">
-            <div className="modal">
+            <div className="modal" style={{textAlign: 'left'}}>
               <BookingForm
                 room={selectedRoom}
                 onSuccess={() => {
@@ -61,18 +40,14 @@ export default function RoomList() {
           </div>
         )}
 
-        {/* ===== Popup สำเร็จ ===== */}
+        {/* Popup สำเร็จ (แบบในรูป 3) */}
         {successRoom && (
           <div className="modal-overlay">
-            <div className="success-modal">
-              <h3 className="success-title">{successRoom.name}</h3>
-              <p className="success-text">
-                จองสำเร็จ <span className="check">✔</span>
-              </p>
-              <button
-                className="ok-btn"
-                onClick={() => setSuccessRoom(null)}
-              >
+            <div className="modal">
+              <div className="success-icon">✔</div>
+              <h3 className="modal-title">{successRoom.name}</h3>
+              <p style={{color: '#22c55e', fontWeight: 'bold'}}>จองสำเร็จ</p>
+              <button className="ok-btn" onClick={() => setSuccessRoom(null)}>
                 ตกลง
               </button>
             </div>
@@ -80,7 +55,6 @@ export default function RoomList() {
         )}
       </div>
 
-      {/* ===== Bottom Menu ===== */}
       <UserBottomNav />
     </>
   );
