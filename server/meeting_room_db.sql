@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 09, 2026 at 04:56 PM
+-- Generation Time: Feb 17, 2026 at 07:00 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,6 +38,15 @@ CREATE TABLE `bookings` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `bookings`
+--
+
+INSERT INTO `bookings` (`id`, `user_id`, `room_id`, `booking_date`, `start_time`, `end_time`, `status`, `created_at`) VALUES
+(5, 1, 1, '2026-02-09', '22:00:00', '23:00:00', 'confirmed', '2026-02-09 16:07:02'),
+(6, 1, 1, '2026-02-17', '11:58:00', '11:59:00', 'confirmed', '2026-02-17 04:58:27'),
+(7, 1, 2, '2026-02-17', '12:09:00', '12:10:00', 'confirmed', '2026-02-17 05:09:34');
+
 -- --------------------------------------------------------
 
 --
@@ -62,7 +71,9 @@ CREATE TABLE `rooms` (
 
 INSERT INTO `rooms` (`id`, `name`, `building`, `floor`, `capacity`, `type`, `image_url`, `description`, `status`) VALUES
 (1, 'Room A-201 (Small)', 'ตึก A', '2', 4, 'Small', 'https://images.unsplash.com/photo-1497366216548-37526070297c', NULL, 'active'),
-(2, 'Room B-305 (Medium)', 'ตึก B', '3', 8, 'Medium', 'https://images.unsplash.com/photo-1497366811353-6870744d04b2', NULL, 'active');
+(2, 'Room B-305 (Medium)', 'ตึก B', '3', 8, 'Medium', 'https://images.unsplash.com/photo-1497366811353-6870744d04b2', NULL, 'active'),
+(3, 'Room C-101 (Large)', 'C', '1', 15, 'Large', 'https://www.banidea.com/wp-content/uploads/2013/10/Office-Board-Room-Design-2.jpg', 'ห้องใหญ่ รองรับการประชุมสำคัญ', 'active'),
+(4, 'Boardroom A-501', 'A', '5', 20, 'Boardroom', 'https://riverineplace.com/wp-content/uploads/2024/05/big-empty-modern-meetingseminarconference-room-hotel.jpg', 'ห้องประชุมผู้บริหาร ตกแต่งหรูหรา', 'active');
 
 -- --------------------------------------------------------
 
@@ -84,7 +95,12 @@ INSERT INTO `room_equipment` (`id`, `room_id`, `item_name`) VALUES
 (1, 1, 'TV 43\"'),
 (2, 1, 'Whiteboard'),
 (3, 2, 'Projector'),
-(4, 2, 'Conference phone');
+(4, 2, 'Conference phone'),
+(5, 3, 'Smart TV 65\"'),
+(6, 3, 'Video Conf'),
+(7, 3, 'Sound'),
+(8, 4, 'Full AV setup'),
+(9, 4, 'Catering Area');
 
 -- --------------------------------------------------------
 
@@ -99,6 +115,19 @@ CREATE TABLE `users` (
   `role` enum('user','admin') DEFAULT 'user',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `password`, `role`, `created_at`) VALUES
+(1, 'admin', '1234', 'admin', '2026-02-09 16:04:44'),
+(2, 'user1', '1234', 'user', '2026-02-17 04:55:35'),
+(3, 'user2', '1234', 'user', '2026-02-17 04:55:35'),
+(4, 'user3', '1234', 'user', '2026-02-17 04:55:35'),
+(5, 'user4', '1234', 'user', '2026-02-17 04:55:35'),
+(6, 'user5', '1234', 'user', '2026-02-17 04:55:35'),
+(7, 'test1', '1234', 'user', '2026-02-17 05:59:20');
 
 --
 -- Indexes for dumped tables
@@ -140,25 +169,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `room_equipment`
 --
 ALTER TABLE `room_equipment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
