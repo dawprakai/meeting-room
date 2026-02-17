@@ -1,27 +1,22 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "../components/auth/Login";
-import RoomList from "../components/user/RoomList";
+import Register from "../components/auth/Register"; // 1. เพิ่มการ import
 import Dashboard from "../components/admin/Dashboard";
-import ManageRooms from "../components/admin/ManageRooms";
-import ManageBookings from "../components/admin/ManageBookings";
-import ManageUsers from "../components/admin/ManageUsers";
+import RoomList from "../components/user/RoomList";
 import MyBookings from "../components/user/MyBookings";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* 🔑 LOGIN (หน้าแรก) */}
       <Route path="/" element={<Login />} />
-
-      {/* USER */}
+      <Route path="/register" element={<Register />} /> {/* 2. เพิ่ม Route นี้ */}
+      
+      {/* ส่วนของ User */}
       <Route path="/user" element={<RoomList />} />
       <Route path="/my-bookings" element={<MyBookings />} />
 
-      {/* ADMIN */}
+      {/* ส่วนของ Admin */}
       <Route path="/admin" element={<Dashboard />} />
-      <Route path="/admin/rooms" element={<ManageRooms />} />
-      <Route path="/admin/bookings" element={<ManageBookings />} />
-      <Route path="/admin/users" element={<ManageUsers />} />
     </Routes>
   );
 }

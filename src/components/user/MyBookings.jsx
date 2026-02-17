@@ -16,8 +16,7 @@ export default function MyBookings() {
 
   if (!user) return null;
 
-  const myBookings =
-    bookings?.filter((b) => b.booker === user.username) || [];
+  const myBookings = bookings?.filter((b) => b.booker === user.username) || [];
 
   return (
     <>
@@ -25,9 +24,7 @@ export default function MyBookings() {
 
       <div className="page">
         {myBookings.length === 0 && (
-          <p style={{ textAlign: "center" }}>
-            ยังไม่มีการจอง
-          </p>
+          <p style={{ textAlign: "center" }}>ยังไม่มีการจอง</p>
         )}
 
         {myBookings.map((b) => (
@@ -38,9 +35,7 @@ export default function MyBookings() {
               ⏰ {b.startTime} - {b.endTime}
             </div>
 
-            <button className="cancel-btn">
-              ยกเลิกการจอง
-            </button>
+            <button className="cancel-btn">ยกเลิกการจอง</button>
           </div>
         ))}
       </div>
