@@ -7,7 +7,9 @@ const API_URL = "http://localhost:3000/api";
 export const BookingProvider = ({ children }) => {
   const [rooms, setRooms] = useState([]);
   const [bookings, setBookings] = useState([]);
+  const [users, setUsers] = useState([]); // ✅ เพิ่ม State สำหรับเก็บข้อมูลผู้ใช้งาน
 
+  // ฟังก์ชันดึงข้อมูล ห้อง และ การจอง
   const fetchData = async () => {
     try {
       const [roomsRes, bookingsRes] = await Promise.all([
@@ -21,8 +23,19 @@ export const BookingProvider = ({ children }) => {
     }
   };
 
+  // ✅ เพิ่มฟังก์ชันดึงข้อมูลผู้ใช้งานทั้งหมดจาก SQL
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/users`);
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchUsers(); // ✅ เรียกดึงข้อมูลผู้ใช้งานทันทีเมื่อโหลด App
   }, []);
 
   const isRoomAvailable = (roomId, date, startTime, endTime, ignoreId = null) => {
@@ -67,7 +80,6 @@ export const BookingProvider = ({ children }) => {
     });
   };
 
-  // ✅ เพิ่มฟังก์ชันเพื่อดึงรายละเอียดการจองที่กำลังเกิดขึ้น (เพื่อเอาวันที่และเวลา)
   const getRoomBookingDetail = (roomId) => {
     const now = new Date();
     const today = now.toISOString().split("T")[0];
@@ -120,16 +132,30 @@ export const BookingProvider = ({ children }) => {
     }
   };
 
+  // ✅ เพิ่มฟังก์ชันจัดการระดับสิทธิ์ผู้ใช้งาน (ตัวอย่าง)
+  const makeAdmin = async (userId) => {
+    try {
+      await axios.put(`${API_URL}/users/${userId}/make-admin`);
+      await fetchUsers(); // โหลดข้อมูลใหม่หลังอัปเดต
+      alert("อัปเดตสิทธิ์สำเร็จ");
+    } catch (error) {
+      alert("ไม่สามารถเปลี่ยนสิทธิ์ได้");
+    }
+  };
+
   return (
     <BookingContext.Provider value={{ 
       rooms, 
       bookings, 
+      users, // ✅ ส่งออกข้อมูลผู้ใช้งาน
+      fetchUsers, // ✅ ส่งออกฟังก์ชันรีเฟรชผู้ใช้งาน
+      makeAdmin, // ✅ ส่งออกฟังก์ชันอัปเดตสิทธิ์
       addBooking, 
       updateBooking, 
       cancelBooking, 
       isRoomBookedToday,
       isRoomCurrentlyOccupied,
-      getRoomBookingDetail // ✅ ส่งออกฟังก์ชันเพื่อให้หน้าอื่น (RoomList) ดึงไปแสดงวันที่ได้
+      getRoomBookingDetail
     }}>
       {children}
     </BookingContext.Provider>
