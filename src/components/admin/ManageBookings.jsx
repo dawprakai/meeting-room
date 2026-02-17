@@ -15,9 +15,21 @@ export default function ManageBookings() {
         <div className="admin-card">
           {bookings.map((b) => (
             <div key={b.id} className="admin-list-item">
-              <span>{b.booker}</span>
+              {/* แสดงชื่อผู้จอง */}
+              <span className="admin-item-name">{b.booker || "User"}</span>
+              
+              {/* แสดงชื่อห้อง */}
               <span>{b.roomName}</span>
-              <span>{b.startTime}-{b.endTime}</span>
+
+              {/* ✅ เพิ่มการแสดงวันที่จอง */}
+              <span style={{ color: '#666' }}>
+                📅 {new Date(b.date || b.booking_date).toLocaleDateString('th-TH')}
+              </span>
+
+              {/* แสดงเวลา (ตรวจสอบชื่อตัวแปรให้ตรงกับ start_time/end_time หรือ startTime/endTime) */}
+              <span>
+                {b.startTime || b.start_time} - {b.endTime || b.end_time} น.
+              </span>
             </div>
           ))}
         </div>

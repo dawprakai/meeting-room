@@ -47,7 +47,6 @@ export const BookingProvider = ({ children }) => {
     });
   };
 
-  // ฟังก์ชันเช็คสถานะห้องปัจจุบัน (Real-time)
   const isRoomCurrentlyOccupied = (roomId) => {
     const now = new Date();
     const today = now.toISOString().split("T")[0];
@@ -55,6 +54,27 @@ export const BookingProvider = ({ children }) => {
                         now.getMinutes().toString().padStart(2, '0') + ":00";
 
     return bookings.some((b) => {
+      const bRoomId = b.roomId || b.room_id;
+      const bDate = b.date || b.booking_date;
+      const recordDate = new Date(bDate).toISOString().split('T')[0];
+
+      return (
+        Number(bRoomId) === Number(roomId) &&
+        recordDate === today &&
+        currentTime >= b.start_time &&
+        currentTime < b.end_time
+      );
+    });
+  };
+
+  // ✅ เพิ่มฟังก์ชันเพื่อดึงรายละเอียดการจองที่กำลังเกิดขึ้น (เพื่อเอาวันที่และเวลา)
+  const getRoomBookingDetail = (roomId) => {
+    const now = new Date();
+    const today = now.toISOString().split("T")[0];
+    const currentTime = now.getHours().toString().padStart(2, '0') + ":" + 
+                        now.getMinutes().toString().padStart(2, '0') + ":00";
+
+    return bookings.find((b) => {
       const bRoomId = b.roomId || b.room_id;
       const bDate = b.date || b.booking_date;
       const recordDate = new Date(bDate).toISOString().split('T')[0];
@@ -108,7 +128,8 @@ export const BookingProvider = ({ children }) => {
       updateBooking, 
       cancelBooking, 
       isRoomBookedToday,
-      isRoomCurrentlyOccupied // ✅ ต้องเพิ่มชื่อฟังก์ชันตรงนี้เพื่อให้ไฟล์อื่นเรียกใช้ได้
+      isRoomCurrentlyOccupied,
+      getRoomBookingDetail // ✅ ส่งออกฟังก์ชันเพื่อให้หน้าอื่น (RoomList) ดึงไปแสดงวันที่ได้
     }}>
       {children}
     </BookingContext.Provider>
