@@ -2,13 +2,12 @@ import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 const BookingContext = createContext();
-const API_URL = "http://localhost:3000/api"; // ชี้ไปที่ Server ของคุณ
+const API_URL = "http://localhost:3000/api";
 
 export const BookingProvider = ({ children }) => {
   const [rooms, setRooms] = useState([]);
   const [bookings, setBookings] = useState([]);
 
-  // ฟังก์ชันดึงข้อมูลจาก Server
   const fetchData = async () => {
     try {
       const [roomsRes, bookingsRes] = await Promise.all([
@@ -23,26 +22,21 @@ export const BookingProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchData(); // ดึงข้อมูลทันทีเมื่อเปิดเว็บ
+    fetchData();
   }, []);
 
-  // เช็คห้องว่าง (Client-side)
   const isRoomAvailable = (roomId, date, startTime, endTime, ignoreId = null) => {
     return !bookings.some((b) => {
       if (ignoreId && b.id === ignoreId) return false;
       const bRoomId = b.roomId || b.room_id;
       const bDate = b.date || b.booking_date;
-      
-      // แปลง ID และ Date ให้ตรงกันเพื่อเปรียบเทียบ
       if (Number(bRoomId) !== Number(roomId)) return false;
       const recordDate = new Date(bDate).toISOString().split('T')[0];
       if (recordDate !== date) return false;
-
       return startTime < b.end_time && endTime > b.start_time;
     });
   };
 
-  // เช็คว่าห้องถูกจองวันนี้หรือไม่
   const isRoomBookedToday = (roomId) => {
     const today = new Date().toISOString().split("T")[0];
     return bookings.some((b) => {
@@ -53,17 +47,37 @@ export const BookingProvider = ({ children }) => {
     });
   };
 
-  // ส่งข้อมูลการจองไป Server
+  // ฟังก์ชันเช็คสถานะห้องปัจจุบัน (Real-time)
+  const isRoomCurrentlyOccupied = (roomId) => {
+    const now = new Date();
+    const today = now.toISOString().split("T")[0];
+    const currentTime = now.getHours().toString().padStart(2, '0') + ":" + 
+                        now.getMinutes().toString().padStart(2, '0') + ":00";
+
+    return bookings.some((b) => {
+      const bRoomId = b.roomId || b.room_id;
+      const bDate = b.date || b.booking_date;
+      const recordDate = new Date(bDate).toISOString().split('T')[0];
+
+      return (
+        Number(bRoomId) === Number(roomId) &&
+        recordDate === today &&
+        currentTime >= b.start_time &&
+        currentTime < b.end_time
+      );
+    });
+  };
+
   const addBooking = async (newBooking) => {
     try {
       await axios.post(`${API_URL}/bookings`, {
-        userId: 1, // ⚠️ ID นี้ต้องมีจริงใน Database ตาราง users
+        userId: 1, 
         roomId: newBooking.roomId,
         date: newBooking.date,
         startTime: newBooking.startTime,
         endTime: newBooking.endTime
       });
-      await fetchData(); // โหลดข้อมูลใหม่
+      await fetchData();
       return { success: true };
     } catch (error) {
       const msg = error.response?.data?.message || "จองไม่สำเร็จ";
@@ -71,13 +85,11 @@ export const BookingProvider = ({ children }) => {
     }
   };
 
-  // ฟังก์ชัน updateBooking (ยังไม่รองรับใน Server เวอร์ชั่นนี้ แต่ใส่ไว้กัน Error)
   const updateBooking = async (data) => {
     alert("ระบบแก้ไขยังไม่เปิดใช้งาน");
     return { success: false, message: "Not implemented" };
   };
 
-  // ยกเลิกการจอง
   const cancelBooking = async (bookingId) => {
     if (!confirm("ยืนยันการยกเลิก?")) return;
     try {
@@ -90,7 +102,13 @@ export const BookingProvider = ({ children }) => {
 
   return (
     <BookingContext.Provider value={{ 
-      rooms, bookings, addBooking, updateBooking, cancelBooking, isRoomBookedToday 
+      rooms, 
+      bookings, 
+      addBooking, 
+      updateBooking, 
+      cancelBooking, 
+      isRoomBookedToday,
+      isRoomCurrentlyOccupied // ✅ ต้องเพิ่มชื่อฟังก์ชันตรงนี้เพื่อให้ไฟล์อื่นเรียกใช้ได้
     }}>
       {children}
     </BookingContext.Provider>
